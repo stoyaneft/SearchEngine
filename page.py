@@ -2,8 +2,8 @@ from sqlalchemy import Column, Integer, String, Boolean
 from connections import *
 
 
-class Website(Base):
-    __tablename__ = "websites"
+class Page(Base):
+    __tablename__ = "pages"
     id = Column(Integer, primary_key=True)
     website = Column(String)
     title = Column(String)

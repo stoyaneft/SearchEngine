@@ -7,5 +7,4 @@ class SearchEngine:
         Base.metadata.create_all(engine)
         self.__session = Session()
 
-    def scan_page(self):
 
