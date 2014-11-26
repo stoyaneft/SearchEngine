@@ -1,12 +1,11 @@
-from sqlalchemy import Column, Integer, String, Float
+from sqlalchemy import Column, Integer, String
 from connections import *
 
 
-class Movie(Base):
-    __tablename__ = "movies"
+class Website(Base):
+    __tablename__ = "websites"
     id = Column(Integer, primary_key=True)
-    name = Column(String)
-    rating = Column(Float)
-
-    def __str__(self):
-        return '[{}] - {} - ({})'.format(self.id, self.name, self.rating)
+    url = Column(String)
+    title = Column(String)
+    pages_count = Column(Integer)
+    HTML_version = Column(String)
