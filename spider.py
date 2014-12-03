@@ -110,7 +110,7 @@ class Spider():
 
 
 def main():
-    spider = Spider('https://www.mattcutts.com/blog/hermit-mode/', 10)
+    spider = Spider('https://www.mattcutts.com/blog/hermit-mode/')
     spider.scan_website()
     spider.save_in_db()
 
