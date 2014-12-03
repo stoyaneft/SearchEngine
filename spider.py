@@ -91,9 +91,9 @@ class Spider():
     def scan_website(self):
         while len(self.to_scan) != 0:
             self.scan_page(self.to_scan.pop())
-            if self.scan_depth:
-                if self.website_info['pages_count'] == self.scan_depth:
-                    return
+            # if self.scan_depth:
+            #     if self.website_info['pages_count'] == self.scan_depth:
+            #         return
 
     def save_in_db(self):
         saved_urls = [url[0] for url in self.__session.query(Page.url).all()]
