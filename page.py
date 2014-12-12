@@ -8,7 +8,7 @@ class Page(Base):
     __tablename__ = "pages"
     id = Column(Integer, primary_key=True)
     title = Column(String)
-    description = Column(Integer)
+    description = Column(String)
     url = Column(String)
     ssl = Column(Boolean)
     points = Column(Integer)

@@ -19,7 +19,7 @@ class Spider():
         self.domain = Spider.get_domain(website)
         self.scanned_urls = []
         self.website_info = self.get_website_info()
-        self.pages_info = {}
+        #self.pages_info = {}
         self.scan_depth = scan_depth
         self.to_scan = [website]
 
@@ -39,8 +39,10 @@ class Spider():
         info['HTML_version'] = self.get_HTML_version()
         return info
 
-    def get_page_info(self, soup):
+    def get_page_info(self, url, soup):
         info = {}
+        info['url'] = url
+        info['website_url'] = self.website
         info['title'] = soup.title.string if soup.title else None
         description = soup.find(attrs={"property": "og:description"})
         if description:
@@ -68,8 +70,8 @@ class Spider():
         page_info = self.get_page_info(soup)
         pages_count = self.website_info['pages_count']
         self.pages_info[pages_count] = page_info
-        self.pages_info[pages_count]['url'] = url
-        self.pages_info[pages_count]['website_url'] = self.website
+        self.pages_info['url'] = url
+        self.pages_info['website_url'] = self.website
 
     def should_be_scanned(self, url):
         return url not in self.scanned_urls \
@@ -82,8 +84,8 @@ class Spider():
         html = r.text
         soup = BeautifulSoup(html)
         self.website_info['pages_count'] += 1
-        self.save_page_info(url, soup)
-        for link in soup.find_all('a'):
+        self.save_in_db(url, soup)
+        for link in soup.find_all('a', href=True):
             new_link = self.prepare_url(url, link.get('href'))
             if self.should_be_scanned(new_link):
                 self.to_scan.append(new_link)
@@ -91,28 +93,29 @@ class Spider():
     def scan_website(self):
         while len(self.to_scan) != 0:
             self.scan_page(self.to_scan.pop())
-            # if self.scan_depth:
-            #     if self.website_info['pages_count'] == self.scan_depth:
-            #         return
+            if self.scan_depth:
+                if self.website_info['pages_count'] == self.scan_depth:
+                    return
 
-    def save_in_db(self):
+    def save_in_db(self, url, soup):
         saved_urls = [url[0] for url in self.__session.query(Page.url).all()]
-        for page in self.pages_info.values():
-            if page['url'] in saved_urls:
-                continue
-            pg = Page(**page)
+        page_info = self.get_page_info(url, soup)
+        if url not in saved_urls:
+            pg = Page(**page_info)
             self.__session.add(pg)
         saved_websites = [site[0]
                           for site in self.__session.query(Website.url).all()]
         if self.website not in saved_websites:
             self.__session.add(Website(**self.website_info))
+        pages_count = self.__session.query(Page).count()
+        self.__session.query(Website).filter(
+            Website.url == self.website).update({'pages_count': pages_count})
         self.__session.commit()
 
 
 def main():
     spider = Spider('https://www.mattcutts.com/blog/hermit-mode/')
     spider.scan_website()
-    spider.save_in_db()
 
 if __name__ == '__main__':
     main()
