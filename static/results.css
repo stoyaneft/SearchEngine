@@ -1,0 +1,20 @@
+body {
+    background-color: #777777;
+}
+p {
+    color: #FFCE4F;
+}
+#title {
+    font-weight: bold;
+}
+
+#description {
+    font-weight: bold;
+}
+
+#results {
+    color: #FFCE4F;
+    text-align: center;
+    font-size:35px;
+    font-weight: bold;
+}

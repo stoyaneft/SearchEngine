@@ -1,20 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <style type="text/css">
-        body {
-            background-color: white;
-        }
-        p {
-            background-color: #6CD7F8;
-        }
-    </style>
+    <title> Hack Search Results </title>
+    <link rel="stylesheet" href="/static/results.css" type="text/css" />
 </head>
 <body>
-    <h2>Results for {{ keyword }}:</h2>
+    <div id="results">Results for {{ keyword }}:</div>
     <ul>
     {% for page in pages_searched %}
-        <li> <p> <a href="{{ page.url }}">{{ page.url }}</a> - <b>Title</b>: {{ page.title }} <b>Description</b>: {{ page.description }}</p></li>
+        <li> <p> <a href="{{ page.url }}">{{ page.url }}</a> - <span id="title">Title</span>: {{ page.title }} <span id="description">Description</span>: {{ page.description }}</p></li>
     {% endfor %}
     </ul>
 </body>

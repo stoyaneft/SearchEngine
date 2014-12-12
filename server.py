@@ -9,7 +9,7 @@ def get_html(filename):
 
 @app.route('/')
 def main_page():
-    return get_html('search_engine.html')
+    return get_html('main_page.html')
 
 
 @app.route('/search/')

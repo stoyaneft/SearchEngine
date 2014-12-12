@@ -36,7 +36,7 @@ class Spider():
         info = {'url': self.website}
         info['title'] = soup.title.string if soup.title else None
         info['pages_count'] = 0
-        info['HTML_version'] = self.get_HTML_version()
+        #info['HTML_version'] = self.get_HTML_version()
         return info
 
     def get_page_info(self, url, soup):
@@ -57,14 +57,14 @@ class Spider():
     def prepare_url(self, url, href):
         return urllib.parse.urljoin(url, href)
 
-    def get_HTML_version(self):
-        soup = BeautifulSoup(requests.get(self.website).text)
-        items = [
-            item for item in soup.contents if isinstance(item, bs4.Doctype)]
-        doctype = items[0] if items else None
-        html_version = re.search(
-            'HTML (?P<version>\d+.\d+)', doctype).group('version')
-        return html_version
+    # def get_HTML_version(self):
+    #     soup = BeautifulSoup(requests.get(self.website).text)
+    #     items = [
+    #         item for item in soup.contents if isinstance(item, bs4.Doctype)]
+    #     doctype = items[0] if items else None
+    #     html_version = re.search(
+    #         'HTML (?P<version>\d+.\d+)', doctype).group('version')
+    #     return html_version
 
     def save_page_info(self, url, soup):
         page_info = self.get_page_info(soup)
@@ -75,9 +75,12 @@ class Spider():
 
     def should_be_scanned(self, url):
         return url not in self.scanned_urls \
-            and not self.is_outgoing(url) and '#' not in url
+            and not self.is_outgoing(url) and '#' not in url \
+            and '..' not in url
 
     def scan_page(self, url):
+        if url in self.scanned_urls:
+            return
         print(url)
         self.scanned_urls.append(url)
         r = requests.get(url)
@@ -114,7 +117,7 @@ class Spider():
 
 
 def main():
-    spider = Spider('https://www.mattcutts.com/blog/hermit-mode/')
+    spider = Spider('http://hackbulgaria.com/')
     spider.scan_website()
 
 if __name__ == '__main__':
